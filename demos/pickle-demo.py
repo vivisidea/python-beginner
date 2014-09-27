@@ -10,6 +10,8 @@ import os
 from cStringIO import StringIO
 import json
 import sys
+import random,string, time
+
 
 
 
@@ -54,9 +56,28 @@ def pickledemo():
     pickle.dump([x for x in xrange(1,10)], sio)
     print sio.getvalue()
 
+_CHARS = string.ascii_lowercase + string.digits
+def random_string(len):
+    return ''.join(random.choice(_CHARS) for x in range(len))
+
+def efficiency_test():
+    count = 1000
+    data = dict()
+    for x in xrange(0, count, 1):
+        key = random_string(32)
+        value = random_string(64)
+        data[key] = value
+    print len(data)
+    start = time.time()
+    with open('pickle.dict.dat', 'w+') as f:
+        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+    elapse = time.time() - start
+    print 'dump ok. elapse = %s seconds' % elapse # pickle 1m records takes about 15s, well that's kind of fast
+
 if __name__ == '__main__':
     print len(sys.argv)
     for arg in sys.argv:
         print arg
-    pickledemo()
-    jsondemo()
+#    pickledemo()
+#    jsondemo()
+    efficiency_test()
